@@ -1,0 +1,51 @@
+
+function totalskipped=donotread_dcdstep(h)
+% This software includes code developed by the Theoretical and Computational
+% Biophysics Group in the Beckman Institute for Advanced Science and Technology 
+% at the University of Illinois at Urbana-Champaign.
+%
+% [x,y,z] = read_dcdstep(handle)
+%
+
+begin=ftell(h.fid);
+
+% If this is a CHARMm file and contains an extra data block, we must skip it
+if h.charmm & h.charmm_extrablock
+  blocksize = fread(h.fid, 1, 'int32');
+  fseek(h.fid, blocksize, 0);
+  blocksize = fread(h.fid, 1, 'int32');
+end
+
+if h.NAMNF == 0
+
+  % Get x coordinates
+  blocksize = fread(h.fid, 1, 'int32');
+  fseek(h.fid, blocksize, 0);
+  blocksize = fread(h.fid, 1, 'int32');
+
+  % Get y coordinates 
+  blocksize = fread(h.fid, 1, 'int32');
+  fseek(h.fid, blocksize, 0);
+  blocksize = fread(h.fid, 1, 'int32');
+
+  % Get z coordinates 
+  blocksize = fread(h.fid, 1, 'int32');
+  fseek(h.fid, blocksize, 0);
+  blocksize = fread(h.fid, 1, 'int32');
+
+else    
+ 
+  % this is not implemented in the VMD code I copied from  
+
+end  
+ 
+% Skip the 4th dimension, if present
+if h.charmm & h.charmm_4dims
+  blocksize = fread(h.fid, 1, 'int32');
+  fseek(h.fid, blocksize, 0);
+  blocksize = fread(h.fid, 1, 'int32');
+end
+
+totalskipped=ftell(h.fid)-begin;
+end
+
